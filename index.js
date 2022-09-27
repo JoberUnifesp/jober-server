@@ -4,16 +4,16 @@ const path = require('path');
 const mysql = require('mysql');
 const cors = require('cors');
 
-const dotenv = require('dotenv');
-dotenv.config();
+// const dotenv = require('dotenv');
+// dotenv.config();
 
 
 //conexao temporaria com mysql:
 const connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
+    host: 'engsoft-mysql.mysql.database.azure.com',
+    user: 'globaluser',
+    password: 'xgJ3zFFhn5B6wA',
+    database: 'APP'
 })
 
 connection.connect((err) => {
@@ -69,7 +69,7 @@ app.get('/jober/SignUp', (req, res) => {
 }) 
 
 
-app.listen(3001, () => {
+app.listen(process.env.PORT, () => {
     console.log('Server running on port 3001')
 })
 
