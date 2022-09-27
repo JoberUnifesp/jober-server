@@ -32,7 +32,7 @@ app.use(express.json())
 app.use(cors())
 
 
-app.post('/jober/SignUp', (req, res) => {
+app.post('https://intense-depths-76560.herokuapp.com/', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
     res.header(
