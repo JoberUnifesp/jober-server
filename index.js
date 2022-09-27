@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
     password: 'xgJ3zFFhn5B6wA',
     database: 'APP'
 })
-
+const flag = 'nothing done yet';
 connection.connect((err) => {
     if (err){
         console.log('Connection failed: ', err);
@@ -22,6 +22,7 @@ connection.connect((err) => {
     }
 
     console.log(`Conected sucessfully to the database on azure`)
+    flag = `Conected sucessfully to the database on azure`
 })
 
 //-------------------------
@@ -70,7 +71,7 @@ app.post('/', (req, res) => {
 // }) 
 
 app.get('/', (req, res) => {
-    res.send('homepage')
+    res.send(flag)
 }) 
 
 port = process.env.PORT || 3000;
