@@ -14,7 +14,6 @@ const connection = mysql.createConnection({
     password: 'xgJ3zFFhn5B6wA',
     database: 'APP'
 })
-const flag = 'nothing done yet';
 connection.connect((err) => {
     if (err){
         console.log('Connection failed: ', err);
@@ -22,7 +21,6 @@ connection.connect((err) => {
     }
 
     console.log(`Conected sucessfully to the database on azure`)
-    flag = `Conected sucessfully to the database on azure`
 })
 
 //-------------------------
@@ -58,8 +56,6 @@ app.post('/', (req, res) => {
             connection.query(insert_query, [nome, sobrenome, data_de_nascimento, email, senha], (err, result) => {
                 if(err){
                     res.json(err);
-                }else{
-                    res.json({status: 'ok'})
                 }
             })
         }
@@ -71,10 +67,10 @@ app.post('/', (req, res) => {
 // }) 
 
 app.get('/', (req, res) => {
-    res.send(flag)
+    res.send('homepage')
 }) 
 
-port = process.env.PORT || 3000;
+port = process.env.PORT || 3001;
 
 app.listen(port, () => {
     console.log('Server running on port 3001')
