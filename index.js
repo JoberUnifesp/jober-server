@@ -21,7 +21,7 @@ connection.connect((err) => {
         return;
     }
 
-    console.log(`Conected sucessfully to ${process.env.DATABASE}`)
+    console.log(`Conected sucessfully to the database on azure`)
 })
 
 //-------------------------
@@ -57,6 +57,8 @@ app.post('/', (req, res) => {
             connection.query(insert_query, [nome, sobrenome, data_de_nascimento, email, senha], (err, result) => {
                 if(err){
                     res.json(err);
+                }else{
+                    res.json({status: 'ok'})
                 }
             })
         }
