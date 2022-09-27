@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const path = require('path');
 const mysql = require('mysql');
 const cors = require('cors');
 
@@ -64,16 +63,17 @@ app.post('/', (req, res) => {
     });
 });
 
-app.get('/jober/SignUp', (req, res) => {
-    res.send('Server side')
-}) 
+// app.get('/jober/SignUp', (req, res) => {
+//     res.send('Server side')
+// }) 
 
 app.get('/', (req, res) => {
     res.send('homepage')
 }) 
 
+port = process.env.PORT || 3000;
 
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
     console.log('Server running on port 3001')
 })
 
