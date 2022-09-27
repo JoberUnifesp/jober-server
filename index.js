@@ -68,6 +68,10 @@ app.get('/jober/SignUp', (req, res) => {
     res.send('Server side')
 }) 
 
+app.get('/', (req, res) => {
+    res.send('homepage')
+}) 
+
 
 app.listen(process.env.PORT, () => {
     console.log('Server running on port 3001')
