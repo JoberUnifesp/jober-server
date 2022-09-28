@@ -58,6 +58,7 @@ app.post('/', (req, res) => {
                     res.json(err);
                 }
             })
+            res.redirect('/home');
         }
     });
 });
@@ -67,10 +68,47 @@ app.post('/', (req, res) => {
 // }) 
 
 app.get('/', (req, res) => {
-    res.send('homepage')
+    // res.send("<h1> Welcome to this server </h1>")
+    connection.query("SELECT * FROM USER", (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        res.send(JSON.stringify(result))
+
+    });
 }) 
 
-port = process.env.PORT || 80;
+app.get('/home', (req, res) => {
+    // res.send("<h1> Welcome to this server </h1>")
+    connection.query("SELECT * FROM USER", (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        res.send(JSON.stringify(result))
+
+    });
+}) 
+
+
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+  
+    if (isNaN(port)) {
+      // named pipe
+      return val;
+    }
+  
+    if (port >= 0) {
+      // port number
+      return port;
+    }
+  
+    return false;
+  }
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
