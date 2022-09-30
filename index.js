@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
+const bcrypt = require('bcryptjs')
 
 
 app.use(express.json())
@@ -20,7 +21,7 @@ app.post('/', (req, res) => {
     const sobrenome = req.body.sobrenome;
     const data_de_nascimento = req.body.data_de_nascimento;
     const email = req.body.email;
-    const senha = req.body.senha;
+    const senha = bcrypt.hashSync(req.body.senha, 3);
     const select_query = 'SELECT * FROM USER WHERE EMAIL = ?'
     const insert_query = 'INSERT INTO USER (NOME, SOBRENOME, DATA_DE_NASCIMENTO, EMAIL, SENHA) VALUES (?, ?, ?, ?, ?)'
 
@@ -68,7 +69,8 @@ app.post('/login', (req, res) => {
         if(result.length == 0){
             return res.status(404).json({errorMessage: 'user not found'})
         }
-        if(result.length > 0 && result[0].SENHA == senha){
+        const verified = bcrypt.compareSync(senha, result[0].SENHA);
+        if(result.length > 0 && verified){
             return res.status(200).json({status: 'user sucessfully authenticated'});
         }else{
             return res.status(401).json({errorMessage: 'incorrect password'})
