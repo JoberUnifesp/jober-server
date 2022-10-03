@@ -81,6 +81,21 @@ app.post('/login', (req, res) => {
 });
 
 
+app.post('/Profile/Edit', (req, res) => {
+    const nome = req.body.nome;
+
+    const skills = JSON.stringify(req.body.skills.replace( /,$/, "" ).split(","));
+
+    connection.query("UPDATE USER SET SKILLS = ? WHERE NOME = ?", [skills, nome], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json({message: 'Skills successfully updated', code: 200});
+        }
+    })
+})
+
+
 
 
 app.get('/', (req, res) => {
@@ -125,4 +140,3 @@ app.set('port', port);
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
-
