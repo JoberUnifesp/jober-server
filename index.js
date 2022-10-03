@@ -2,13 +2,13 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
-
+const bcrypt = require('bcryptjs')
 
 app.use(express.json())
 app.use(cors())
 
 
-app.post('/', (req, res) => {
+app.post('/SignUp', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
     res.header(
@@ -20,7 +20,7 @@ app.post('/', (req, res) => {
     const sobrenome = req.body.sobrenome;
     const data_de_nascimento = req.body.data_de_nascimento;
     const email = req.body.email;
-    const senha = req.body.senha;
+    const senha = bcrypt.hashSync(req.body.senha, 3);
     const select_query = 'SELECT * FROM USER WHERE EMAIL = ?'
     const insert_query = 'INSERT INTO USER (NOME, SOBRENOME, DATA_DE_NASCIMENTO, EMAIL, SENHA) VALUES (?, ?, ?, ?, ?)'
 
@@ -35,10 +35,10 @@ app.post('/', (req, res) => {
                     res.json(err);
                 }
             })
-            res.redirect('/home');
+            res.status(200).json({message: 'user registered sucessfully', code: 200});
         }
         if(result.length > 0){
-            return res.status(409).json({errorMessage: 'email already registered'});
+            return res.status(409).json({message: 'email already registered', code: 409});
         }
 
     });
@@ -66,12 +66,15 @@ app.post('/login', (req, res) => {
             res.json(err);
         }
         if(result.length == 0){
-            return res.status(404).json({errorMessage: 'user not found'})
+            return res.status(404).json({message: 'user not found', code: 404})
         }
-        if(result.length > 0 && result[0].SENHA == senha){
-            return res.status(200).json({status: 'user sucessfully authenticated'});
+
+        const verified = bcrypt.compareSync(senha, result[0].SENHA);
+
+        if(result.length > 0 && verified){
+            return res.status(200).json({message: 'user sucessfully authenticated', code: 200});
         }else{
-            return res.status(401).json({errorMessage: 'incorrect password'})
+            return res.status(401).json({message: 'incorrect password', code: 401})
         }
 
     });
