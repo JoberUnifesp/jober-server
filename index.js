@@ -113,8 +113,8 @@ app.post('/UserProfile/Edit/Experience/:id', (req, res) => {
         let inicio = info.Inicio;
         let fim = info.Fim;
 
-        let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ?'
-        connection.query(select_query, [cargo, empresa], (err, result) =>{
+        let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ? AND USER_ID = ?'
+        connection.query(select_query, [cargo, empresa, req.params.id], (err, result) =>{
             if(err){
                 res.json(err)
             }else{
