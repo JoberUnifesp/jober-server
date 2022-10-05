@@ -95,20 +95,23 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/UserProfile/Edit/Experience', (req, res) => {  
+app.post('/UserProfile/Edit/Experience/:id', (req, res) => {  
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
       );
+
+    console.log(req.body)
     for(i=0; i<req.body.length; i++){
         let info = req.body[i]
 
-        let cargo = info.cargo;
-        let empresa = info.empresa;
-        let inicio = info.inicio;
-        let fim = info.fim;
+        let cargo = info.Cargo;
+        let empresa = info.Empresa;
+        let inicio = info.Inicio;
+        let fim = info.Fim;
 
         let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ?'
         connection.query(select_query, [cargo, empresa], (err, result) =>{
@@ -117,8 +120,8 @@ app.post('/UserProfile/Edit/Experience', (req, res) => {
             }else{
                 if (result.length === 0){
                     console.log('aq')
-                    let insert_query = 'INSERT INTO EXPERIENCES(USER_ID, CARGO, EMPRESA, INICIO, FIM) VALUES (7, ?, ?, ?, ?)'
-                    connection.query(insert_query, [cargo, empresa, inicio, fim], (err, result) => {
+                    let insert_query = 'INSERT INTO EXPERIENCES(USER_ID, CARGO, EMPRESA, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
+                    connection.query(insert_query, [req.params.id, cargo, empresa, inicio, fim], (err, result) => {
                         if(err){
                             res.json(err)
                         }
