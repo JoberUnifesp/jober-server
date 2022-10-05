@@ -76,7 +76,7 @@ app.post('/login', (req, res) => {
                     const verified = bcrypt.compareSync(senha, result_company[0].SENHA);
 
                     if(result_company.length > 0 && verified){
-                        return res.status(200).json({message: 'company sucessfully authenticated', code: 200});
+                        return res.status(200).json({message: 'company sucessfully authenticated', code: 200, id: result_company[0].ID});
                     }else{
                         return res.status(401).json({message: 'incorrect password', code: 401})
                     }
@@ -86,7 +86,7 @@ app.post('/login', (req, res) => {
             const verified = bcrypt.compareSync(senha, result_user[0].SENHA);
 
             if(result_user.length > 0 && verified){
-                return res.status(200).json({message: 'user sucessfully authenticated', code: 200});
+                return res.status(200).json({message: 'user sucessfully authenticated', code: 200, id: result_user[0].ID});
             }else{
                 return res.status(401).json({message: 'incorrect password', code: 401})
             }
@@ -95,19 +95,112 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.post('/UserProfile/Edit/Experience', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
+    for(i=0; i<req.body.length; i++){
+        let info = req.body[i]
 
-app.post('/UserProfile/Edit', (req, res) => {
-    const nome = req.body.nome;
+        let cargo = info.cargo;
+        let empresa = info.empresa;
+        let inicio = info.inicio;
+        let fim = info.fim;
 
-    const skills = JSON.stringify(req.body.skills.replace( /,$/, "" ).split(","));
+        let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ?'
+        connection.query(select_query, [cargo, empresa], (err, result) =>{
+            if(err){
+                res.json(err)
+            }else{
+                if (result.length === 0){
+                    console.log('aq')
+                    let insert_query = 'INSERT INTO EXPERIENCES(USER_ID, CARGO, EMPRESA, INICIO, FIM) VALUES (7, ?, ?, ?, ?)'
+                    connection.query(insert_query, [cargo, empresa, inicio, fim], (err, result) => {
+                        if(err){
+                            res.json(err)
+                        }
+                    })
+                }
+            }
+        })
+    }
 
-    connection.query("UPDATE USER SET SKILLS = ? WHERE NOME = ?", [skills, nome], (err, result) => {
-        if(err){
-            res.json(err);
-        }else{
-            res.json({message: 'Skills successfully updated', code: 200});
-        }
-    })
+    return res.status(200).json({message: 'experience sucessfully added', code: 200});
+})
+
+
+app.post('/UserProfile/Edit/HardSkills', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
+    for(i=0; i<req.body.length; i++){
+        let info = req.body[i]
+
+        let nome = info.nome;
+        let nivel = info.nivel;
+
+        let select_query = 'SELECT * FROM HARDSKILLS WHERE NOME = ?'
+        connection.query(select_query, [nome], (err, result) =>{
+            if(err){
+                res.json(err)
+            }else{
+                if (result.length === 0){
+                    console.log('aq')
+                    let insert_query = 'INSERT INTO HARDSKILLS(USER_ID, NOME, NIVEL) VALUES (7, ?, ?)'
+                    connection.query(insert_query, [nome, nivel], (err, result) => {
+                        if(err){
+                            res.json(err)
+                        }
+                    })
+                }
+            }
+        })
+    }
+
+    return res.status(200).json({message: 'skill sucessfully added', code: 200});
+})
+
+
+app.post('/UserProfile/Edit/Graduation', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
+ 
+    for(i=0; i<req.body.length; i++){
+        let info = req.body[i]
+
+        let user_id = 15;
+        let curso = info.curso;
+        let instituicao = info.instituicao;
+        let inicio = info.inicio;
+        let fim = info.fim;
+
+        let select_query = 'SELECT * FROM GRADUATIONS WHERE CURSO = ? AND INSTITUICAO = ? AND USER_ID = ?'
+        connection.query(select_query, [curso, instituicao, user_id], (err, result) =>{
+            if(err){
+                return res.json(err)
+            }else{
+                if (result.length === 0){
+                    let insert_query = 'INSERT INTO GRADUATIONS(USER_ID, CURSO, INSTITUICAO, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
+                    connection.query(insert_query, [user_id, curso, instituicao, inicio, fim], (err, result) => {
+                        if(err){
+                            return res.json(err)
+                        }
+                    })
+                }
+            }
+        })
+    }
+    return res.status(200).json({message: 'graduation sucessfully added', code: 200});
 })
 
 
@@ -132,6 +225,27 @@ app.get('/home', (req, res) => {
 
     });
 }) 
+
+app.get('/ViewExperiences/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    connection.query("SELECT * FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
 
 
 
