@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
-      );
+    );
 
     const email = req.body.email;
     const senha = req.body.senha;
@@ -102,111 +102,131 @@ app.post('/UserProfile/Edit/Experience/:id', (req, res) => {
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
-      );
+    );
 
-    console.log(req.body)
-    for(i=0; i<req.body.length; i++){
-        let info = req.body[i]
+    let cargo = req.body.Cargo;
+    let empresa = req.body.Empresa;
+    let inicio = req.body.Inicio;
+    let fim = req.body.Fim;
 
-        let cargo = info.Cargo;
-        let empresa = info.Empresa;
-        let inicio = info.Inicio;
-        let fim = info.Fim;
-
-        let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ? AND USER_ID = ?'
-        connection.query(select_query, [cargo, empresa, req.params.id], (err, result) =>{
-            if(err){
-                res.json(err)
-            }else{
-                if (result.length === 0){
-                    console.log('aq')
-                    let insert_query = 'INSERT INTO EXPERIENCES(USER_ID, CARGO, EMPRESA, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
-                    connection.query(insert_query, [req.params.id, cargo, empresa, inicio, fim], (err, result) => {
-                        if(err){
-                            res.json(err)
-                        }
-                    })
-                }
+    let select_query = 'SELECT * FROM EXPERIENCES WHERE CARGO = ? AND EMPRESA = ? AND USER_ID = ?'
+    connection.query(select_query, [cargo, empresa, req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length === 0){
+                console.log('aq')
+                let insert_query = 'INSERT INTO EXPERIENCES(USER_ID, CARGO, EMPRESA, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
+                connection.query(insert_query, [req.params.id, cargo, empresa, inicio, fim], (err, result) => {
+                    if(err){
+                        res.json(err)
+                    }
+                })
             }
-        })
-    }
+        }
+    })
 
     return res.status(200).json({message: 'experience sucessfully added', code: 200});
 })
 
 
-app.post('/UserProfile/Edit/HardSkills', (req, res) => {  
+app.post('/UserProfile/Edit/HardSkills/:id', (req, res) => {  
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
-      );
-    for(i=0; i<req.body.length; i++){
-        let info = req.body[i]
+    );
 
-        let nome = info.nome;
-        let nivel = info.nivel;
+    let nome = req.body.Skill;
+    let nivel = req.body.Nivel;
 
-        let select_query = 'SELECT * FROM HARDSKILLS WHERE NOME = ?'
-        connection.query(select_query, [nome], (err, result) =>{
-            if(err){
-                res.json(err)
-            }else{
-                if (result.length === 0){
-                    console.log('aq')
-                    let insert_query = 'INSERT INTO HARDSKILLS(USER_ID, NOME, NIVEL) VALUES (7, ?, ?)'
-                    connection.query(insert_query, [nome, nivel], (err, result) => {
-                        if(err){
-                            res.json(err)
-                        }
-                    })
-                }
+    let select_query = 'SELECT * FROM HARDSKILLS WHERE NOME = ? AND USER_ID = ?'
+    connection.query(select_query, [nome, req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length === 0){
+                let insert_query = 'INSERT INTO HARDSKILLS (USER_ID, NOME, NIVEL) VALUES (?, ?, ?)'
+                connection.query(insert_query, [req.params.id, nome, nivel], (err, result) => {
+                    if(err){
+                        res.json(err)
+                    }
+                })
             }
-        })
-    }
+        }
+    })
 
     return res.status(200).json({message: 'skill sucessfully added', code: 200});
 })
 
 
-app.post('/UserProfile/Edit/Graduation', (req, res) => {
+app.post('/UserProfile/Edit/Graduation/:id', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
-      );
- 
-    for(i=0; i<req.body.length; i++){
-        let info = req.body[i]
+    );
 
-        let user_id = 15;
-        let curso = info.curso;
-        let instituicao = info.instituicao;
-        let inicio = info.inicio;
-        let fim = info.fim;
+    let curso = req.body.Curso;
+    let instituicao = req.body.Instituicao;
+    let inicio = req.body.Inicio;
+    let fim = req.body.Fim;
 
-        let select_query = 'SELECT * FROM GRADUATIONS WHERE CURSO = ? AND INSTITUICAO = ? AND USER_ID = ?'
-        connection.query(select_query, [curso, instituicao, user_id], (err, result) =>{
-            if(err){
-                return res.json(err)
-            }else{
-                if (result.length === 0){
-                    let insert_query = 'INSERT INTO GRADUATIONS(USER_ID, CURSO, INSTITUICAO, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
-                    connection.query(insert_query, [user_id, curso, instituicao, inicio, fim], (err, result) => {
-                        if(err){
-                            return res.json(err)
-                        }
-                    })
-                }
+    let select_query = 'SELECT * FROM GRADUATIONS WHERE CURSO = ? AND INSTITUICAO = ? AND USER_ID = ?'
+    connection.query(select_query, [curso, instituicao, req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length === 0){
+   
+                let insert_query = 'INSERT INTO GRADUATIONS(USER_ID, CURSO, INSTITUICAO, INICIO, FIM) VALUES (?, ?, ?, ?, ?)'
+                connection.query(insert_query, [req.params.id, curso, instituicao, inicio, fim], (err, result) => {
+                    if(err){
+                        res.json(err)
+                    }
+                })
             }
-        })
-    }
-    return res.status(200).json({message: 'graduation sucessfully added', code: 200});
+        }
+    })
+
+    return res.status(200).json({message: 'Graduation sucessfully added', code: 200});
 })
 
 
+app.post('/UserProfile/Edit/Languages/:id', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
+    let nome = req.body.Lingua;
+    let nivel = req.body.Nivel;
+
+    let select_query = 'SELECT * FROM LANGUAGES WHERE NOME = ? AND USER_ID = ?'
+    connection.query(select_query, [nome, req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length === 0){
+                let insert_query = 'INSERT INTO LANGUAGES (USER_ID, NOME, NIVEL) VALUES (?, ?, ?)'
+                connection.query(insert_query, [req.params.id, nome, nivel], (err, result) => {
+                    if(err){
+                        res.json(err)
+                    }
+                })
+            }
+        }
+    })
+
+    return res.status(200).json({message: 'language sucessfully added', code: 200});
+})
 
 
 app.get('/', (req, res) => {
@@ -231,6 +251,52 @@ app.get('/home', (req, res) => {
 
 app.get('/ViewExperiences/:id', (req, res) => {
     connection.query("SELECT * FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+app.get('/ViewGraduations/:id', (req, res) => {
+    connection.query("SELECT * FROM GRADUATIONS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+
+app.get('/ViewHardSkills/:id', (req, res) => {
+    connection.query("SELECT * FROM HARDSKILLS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+app.get('/ViewLanguages/:id', (req, res) => {
+    connection.query("SELECT * FROM LANGUAGES WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
         }
