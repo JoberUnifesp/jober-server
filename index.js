@@ -229,6 +229,39 @@ app.post('/UserProfile/Edit/Languages/:id', (req, res) => {
 })
 
 
+app.post('/UserProfile/Edit/SoftSkills/:id', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    
+
+    for(i=0; i<req.body.length; i++){
+        let skill = req.body[i].skill
+        let select_query = 'SELECT * FROM SOFTSKILLS WHERE USER_ID = ? AND NOME = ?'
+        connection.query(select_query, [req.params.id, skill], (err, result) =>{
+            if(err){
+                res.json(err)
+            }else{
+                if (result.length === 0){
+                    let insert_query = 'INSERT INTO SOFTSKILLS (USER_ID, NOME) VALUES (?, ?)'
+                    connection.query(insert_query, [req.params.id, skill], (err, result) => {
+                        if(err){
+                            res.json(err)
+                        }
+                    })
+                }
+            }
+        })
+    }
+
+    return res.status(200).json({message: 'softskill sucessfully added', code: 200});
+})
+
+
 app.get('/', (req, res) => {
     connection.query("SELECT * FROM USER", (err, result) => {
         if(err){
@@ -311,6 +344,56 @@ app.get('/ViewLanguages/:id', (req, res) => {
 })
 
 
+
+app.get('/github/:id', (req, res) => {
+    const select_query = "SELECT GITHUB FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].GITHUB)
+        }
+    })
+})
+
+app.get('/NomeSobrenome/:id', (req, res) => {
+    const select_query = "SELECT NOME, SOBRENOME FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].NOME + ' ' + result[0].SOBRENOME)
+        }
+    })
+})
+
+app.get('/email/:id', (req, res) => {
+    const select_query = "SELECT EMAIL FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].EMAIL)
+        }
+    })
+})
+
+app.put('/UserProfile/Edit/Github/:id', (req, res) => {  
+    const update_query = "UPDATE USER SET GITHUB = ? FROM USER WHERE ID = ?";
+    const github = req.body;
+
+    connection.query(update_query, [github, req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json({message: 'github updated successfully', code: 200})
+        }
+    })
+})
+
+
+
+
 /*------------COMPANY-------------*/
 app.post('/company/SignUp', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -377,3 +460,9 @@ app.set('port', port);
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
+
+
+
+
+
+module.exports = app;
