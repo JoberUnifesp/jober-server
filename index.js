@@ -239,26 +239,41 @@ app.post('/UserProfile/Edit/SoftSkills/:id', (req, res) => {
     );
     
 
-    for(i=0; i<req.body.length; i++){
-        let skill = req.body[i].skill
-        let select_query = 'SELECT * FROM SOFTSKILLS WHERE USER_ID = ? AND NOME = ?'
-        connection.query(select_query, [req.params.id, skill], (err, result) =>{
-            if(err){
-                res.json(err)
-            }else{
-                if (result.length === 0){
-                    let insert_query = 'INSERT INTO SOFTSKILLS (USER_ID, NOME) VALUES (?, ?)'
-                    connection.query(insert_query, [req.params.id, skill], (err, result) => {
-                        if(err){
-                            res.json(err)
-                        }
-                    })
-                }
+    let skill = req.body.skill
+    let select_query = 'SELECT * FROM SOFTSKILLS WHERE USER_ID = ? AND NOME = ?'
+    connection.query(select_query, [req.params.id, skill], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length === 0){
+                let insert_query = 'INSERT INTO SOFTSKILLS (USER_ID, NOME) VALUES (?, ?)'
+                connection.query(insert_query, [req.params.id, skill], (err, result) => {
+                    if(err){
+                        res.json(err)
+                    }
+                })
             }
-        })
-    }
+        }
+    })
 
     return res.status(200).json({message: 'softskill sucessfully added', code: 200});
+})
+
+app.get('/ViewSoftSkills/:id', (req, res) => {
+    let select_query = 'SELECT NOME FROM SOFTSKILLS WHERE USER_ID = ?';
+    connection.query(select_query, [req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length !== 0){
+                let skills = []
+                for(i=0; i<result.length; i++){
+                    skills.push(result[i].NOME)
+                }
+                res.json(skills)
+            }
+        }
+    })
 })
 
 
@@ -485,4 +500,3 @@ app.listen(port, () => {
 
 
 
-module.exports = app;
