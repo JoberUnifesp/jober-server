@@ -281,7 +281,7 @@ router.get('/email/:id', (req, res) => {
     })
 })
 
-router.put('/UserProfile/Edit/Github/:id', (req, res) => {  
+router.put('/Edit/Github/:id', (req, res) => {  
     const update_query = "UPDATE USER SET GITHUB = ? WHERE ID = ?";
     const github = req.body.github;
 
@@ -294,7 +294,7 @@ router.put('/UserProfile/Edit/Github/:id', (req, res) => {
     })
 })
 
-router.delete('/UserProfile/Delete/Experience/:id', (req, res) => {
+router.delete('/Delete/Experience/:id', (req, res) => {
     const delete_query = "DELETE FROM EXPERIENCES WHERE ID = ?"
     const select_query = "SELECT * FROM EXPERIENCES WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
     connection.query(select_query, [req.params.id], (err, result) => {
@@ -315,7 +315,7 @@ router.delete('/UserProfile/Delete/Experience/:id', (req, res) => {
     })
 })
 
-router.delete('/UserProfile/Delete/SoftSkill/:id', (req, res) => {
+router.delete('/Delete/SoftSkill/:id', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Methods", "*");
     res.setHeader("Access-Control-Allow-Credentials", true);
