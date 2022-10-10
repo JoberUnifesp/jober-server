@@ -81,7 +81,7 @@ app.post('/login', (req, res) => {
                     const verified = bcrypt.compareSync(senha, result_company[0].SENHA);
 
                     if(result_company.length > 0 && verified){
-                        return res.status(200).json({message: 'company sucessfully authenticated', code: 200, id: result_company[0].ID});
+                        return res.status(200).json({message: 'company sucessfully authenticated', code: 200, id: result_company[0].ID, user: false});
                     }else{
                         return res.status(401).json({message: 'incorrect password', code: 401})
                     }
@@ -91,7 +91,7 @@ app.post('/login', (req, res) => {
             const verified = bcrypt.compareSync(senha, result_user[0].SENHA);
 
             if(result_user.length > 0 && verified){
-                return res.status(200).json({message: 'user sucessfully authenticated', code: 200, id: result_user[0].ID});
+                return res.status(200).json({message: 'user sucessfully authenticated', code: 200, id: result_user[0].ID, user: true});
             }else{
                 return res.status(401).json({message: 'incorrect password', code: 401})
             }
