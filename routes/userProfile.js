@@ -315,5 +315,33 @@ router.delete('/UserProfile/Delete/Experience/:id', (req, res) => {
     })
 })
 
+router.delete('/UserProfile/Delete/SoftSkill/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    const delete_query = "DELETE FROM SOFTSKILLS WHERE ID = ?"
+    const select_query = "SELECT * FROM SOFTSKILLS WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            if(result.length > 0){
+                let item_id = result[0].ID
+                connection.query(delete_query, [item_id], (err, result) => {
+                    if(err){
+                    res.json(err)
+                    }else{
+                        res.json({message: 'SoftSkill deleted successfully', code: 200})
+                    }
+                })
+            }
+        }
+    })
+})
+
 
 module.exports = router;
