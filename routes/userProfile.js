@@ -166,4 +166,152 @@ router.post('/Edit/SoftSkills/:id', (req, res) => {
     return res.status(200).json({message: 'softskill sucessfully added', code: 200});
 })
 
+router.get('/ViewSoftSkills/:id', (req, res) => {
+    let select_query = 'SELECT NOME FROM SOFTSKILLS WHERE USER_ID = ?';
+    connection.query(select_query, [req.params.id], (err, result) =>{
+        if(err){
+            res.json(err)
+        }else{
+            if (result.length !== 0){
+                let skills = []
+                for(i=0; i<result.length; i++){
+                    skills.push(result[i].NOME)
+                }
+                res.json(skills)
+            }
+        }
+    })
+})
+
+router.get('/ViewExperiences/:id', (req, res) => {
+    connection.query("SELECT * FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+router.get('/ViewGraduations/:id', (req, res) => {
+    connection.query("SELECT * FROM GRADUATIONS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+
+router.get('/ViewHardSkills/:id', (req, res) => {
+    connection.query("SELECT * FROM HARDSKILLS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+router.get('/ViewLanguages/:id', (req, res) => {
+    connection.query("SELECT * FROM LANGUAGES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+        if(err){
+            res.write(err);
+        }
+        else{
+            if(result.length > 0){
+                res.json(result)
+            }
+        }
+
+    });
+
+})
+
+
+
+router.get('/github/:id', (req, res) => {
+    const select_query = "SELECT GITHUB FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].GITHUB)
+        }
+    })
+})
+
+router.get('/NomeSobrenome/:id', (req, res) => {
+    const select_query = "SELECT NOME, SOBRENOME FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].NOME + ' ' + result[0].SOBRENOME)
+        }
+    })
+})
+
+router.get('/email/:id', (req, res) => {
+    const select_query = "SELECT EMAIL FROM USER WHERE ID = ?";
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json(result[0].EMAIL)
+        }
+    })
+})
+
+router.put('/UserProfile/Edit/Github/:id', (req, res) => {  
+    const update_query = "UPDATE USER SET GITHUB = ? WHERE ID = ?";
+    const github = req.body.github;
+
+    connection.query(update_query, [github, req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json({message: 'github updated successfully', code: 200})
+        }
+    })
+})
+
+router.delete('/UserProfile/Delete/Experience/:id', (req, res) => {
+    const delete_query = "DELETE FROM EXPERIENCES WHERE ID = ?"
+    const select_query = "SELECT * FROM EXPERIENCES WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            if(result.length > 0){
+                let exp_id = result[0].ID
+                connection.query(delete_query, [exp_id], (err, result) => {
+                    if(err){
+                    res.json(err)
+                    }else{
+                        res.json({message: 'experience deleted successfully', code: 200})
+                    }
+                })
+            }
+        }
+    })
+})
+
+
 module.exports = router;
