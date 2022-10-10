@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 const connection = require('../databaseConnection')
+const bcrypt = require('bcryptjs')
 
 router.post('/Edit/Experience/:id', (req, res) => {  
     res.setHeader('Access-Control-Allow-Origin', '*');
