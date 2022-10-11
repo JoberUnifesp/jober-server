@@ -169,6 +169,14 @@ router.post('/Edit/SoftSkills/:id', (req, res) => {
 })
 
 router.get('/ViewSoftSkills/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     let select_query = 'SELECT NOME FROM SOFTSKILLS WHERE USER_ID = ?';
     connection.query(select_query, [req.params.id], (err, result) =>{
         if(err){
@@ -180,12 +188,22 @@ router.get('/ViewSoftSkills/:id', (req, res) => {
                     skills.push(result[i].NOME)
                 }
                 res.json(skills)
+            }else{
+                res.json(null)
             }
         }
     })
 })
 
 router.get('/ViewExperiences/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     connection.query("SELECT * FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
@@ -193,6 +211,8 @@ router.get('/ViewExperiences/:id', (req, res) => {
         else{
             if(result.length > 0){
                 res.json(result)
+            }else{
+                res.json(null)
             }
         }
 
@@ -201,6 +221,14 @@ router.get('/ViewExperiences/:id', (req, res) => {
 })
 
 router.get('/ViewGraduations/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     connection.query("SELECT * FROM GRADUATIONS WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
@@ -208,6 +236,8 @@ router.get('/ViewGraduations/:id', (req, res) => {
         else{
             if(result.length > 0){
                 res.json(result)
+            }else{
+                res.json(null)
             }
         }
 
@@ -217,6 +247,14 @@ router.get('/ViewGraduations/:id', (req, res) => {
 
 
 router.get('/ViewHardSkills/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     connection.query("SELECT * FROM HARDSKILLS WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
@@ -224,6 +262,8 @@ router.get('/ViewHardSkills/:id', (req, res) => {
         else{
             if(result.length > 0){
                 res.json(result)
+            }else{
+                res.json(null)
             }
         }
 
@@ -232,6 +272,14 @@ router.get('/ViewHardSkills/:id', (req, res) => {
 })
 
 router.get('/ViewLanguages/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     connection.query("SELECT * FROM LANGUAGES WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
@@ -239,6 +287,8 @@ router.get('/ViewLanguages/:id', (req, res) => {
         else{
             if(result.length > 0){
                 res.json(result)
+            }else{
+                res.json(null)
             }
         }
 
@@ -249,6 +299,14 @@ router.get('/ViewLanguages/:id', (req, res) => {
 
 
 router.get('/github/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     const select_query = "SELECT GITHUB FROM USER WHERE ID = ?";
     connection.query(select_query, [req.params.id], (err, result) => {
         if(err){
@@ -260,6 +318,14 @@ router.get('/github/:id', (req, res) => {
 })
 
 router.get('/NomeSobrenome/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     const select_query = "SELECT NOME, SOBRENOME FROM USER WHERE ID = ?";
     connection.query(select_query, [req.params.id], (err, result) => {
         if(err){
@@ -271,6 +337,14 @@ router.get('/NomeSobrenome/:id', (req, res) => {
 })
 
 router.get('/email/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     const select_query = "SELECT EMAIL FROM USER WHERE ID = ?";
     connection.query(select_query, [req.params.id], (err, result) => {
         if(err){
@@ -282,6 +356,14 @@ router.get('/email/:id', (req, res) => {
 })
 
 router.put('/Edit/Github/:id', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     const update_query = "UPDATE USER SET GITHUB = ? WHERE ID = ?";
     const github = req.body.github;
 
@@ -294,7 +376,38 @@ router.put('/Edit/Github/:id', (req, res) => {
     })
 })
 
+router.put('/Edit/Email/:id', (req, res) => {  
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    
+    const update_query = "UPDATE USER SET EMAIL = ? WHERE ID = ?";
+    const email = req.body.email;
+
+    connection.query(update_query, [email, req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            res.json({message: 'email updated successfully', code: 200})
+        }
+    })
+})
+
+/* -------------------------------------deletion------------------------------------------------ */
+
 router.delete('/Delete/Experience/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+
     const delete_query = "DELETE FROM EXPERIENCES WHERE ID = ?"
     const select_query = "SELECT * FROM EXPERIENCES WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
     connection.query(select_query, [req.params.id], (err, result) => {
@@ -336,6 +449,90 @@ router.delete('/Delete/SoftSkill/:id', (req, res) => {
                     res.json(err)
                     }else{
                         res.json({message: 'SoftSkill deleted successfully', code: 200})
+                    }
+                })
+            }
+        }
+    })
+})
+
+router.delete('/Delete/HardSkill/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    const delete_query = "DELETE FROM HARDSKILLS WHERE ID = ?"
+    const select_query = "SELECT * FROM HARDSKILLS WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            if(result.length > 0){
+                let item_id = result[0].ID
+                connection.query(delete_query, [item_id], (err, result) => {
+                    if(err){
+                    res.json(err)
+                    }else{
+                        res.json({message: 'HardSkill deleted successfully', code: 200})
+                    }
+                })
+            }
+        }
+    })
+})
+
+router.delete('/Delete/Language/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    const delete_query = "DELETE FROM LANGUAGES WHERE ID = ?"
+    const select_query = "SELECT * FROM LANGUAGES WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            if(result.length > 0){
+                let item_id = result[0].ID
+                connection.query(delete_query, [item_id], (err, result) => {
+                    if(err){
+                    res.json(err)
+                    }else{
+                        res.json({message: 'Language deleted successfully', code: 200})
+                    }
+                })
+            }
+        }
+    })
+})
+
+router.delete('/Delete/Graduation/:id', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    const delete_query = "DELETE FROM GRADUATIONS WHERE ID = ?"
+    const select_query = "SELECT * FROM GRADUATIONS WHERE USER_ID = ? ORDER BY ID DESC LIMIT 1"
+    connection.query(select_query, [req.params.id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else{
+            if(result.length > 0){
+                let item_id = result[0].ID
+                connection.query(delete_query, [item_id], (err, result) => {
+                    if(err){
+                    res.json(err)
+                    }else{
+                        res.json({message: 'Graduation deleted successfully', code: 200})
                     }
                 })
             }
