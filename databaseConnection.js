@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
+    connectionLimit : 100,
     host: 'jober.mysql.database.azure.com',
     user: 'globaluser',
     password: 'xgJ3zFFhn5B6wA',
