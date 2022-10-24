@@ -72,6 +72,7 @@ router.post('/', (req, res) => {
 })
 
 router.get('/', (req, res) => {
+    setHeadersResponse(res);
     const select_vacancy_query = 'SELECT * FROM VACANCY JOIN SKILLS ON SKILLS.VACANCY_ID=VACANCY.ID'
     connection.query(select_vacancy_query, (err, result) => {
         if(err){
