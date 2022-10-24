@@ -9,9 +9,11 @@ app.use(cors())
 
 const company = require("./routes/company.js");
 const userProfile = require("./routes/userProfile.js");
+const vacancy = require("./routes/vacancy.js");
 
 app.use("/company", company);
 app.use("/UserProfile", userProfile);
+app.use("/vacancy", vacancy);
 
 app.post('/SignUp', (req, res) => {     
     res.setHeader('Access-Control-Allow-Origin', '*');
