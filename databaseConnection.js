@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-    host: 'engsoft-mysql.mysql.database.azure.com',
+    host: 'jober.mysql.database.azure.com',
     user: 'globaluser',
     password: 'xgJ3zFFhn5B6wA',
     database: 'APP'
