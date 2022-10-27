@@ -16,6 +16,7 @@ router.post('/', (req, res) => {
     setHeadersResponse(res);
 
     const idCompany = req.body.idCompany;
+    const company_name = req.body.companyName;
 
     const cargo = req.body.cargo;
     const area = req.body.area;
@@ -36,10 +37,10 @@ router.post('/', (req, res) => {
     const hardSkill3Desc = req.body.hardSkill3Desc;
     const hardSkill3Nivel = req.body.hardSkill3Nivel;
 
-    const atributos_vacancy = [cargo, area, tempoExperiencia, idioma, idiomaNivel, cidade, idCompany];
+    const atributos_vacancy = [cargo, area, tempoExperiencia, idioma, idiomaNivel, cidade, idCompany, company_name];
     
     const select_company_query = 'SELECT * FROM COMPANY WHERE ID = ?'
-    const insert_vacancy_query = 'INSERT INTO VACANCY (CARGO, AREA, EXPERIENCIA, IDIOMA, IDIOMA_NIVEL, CIDADE, COMPANY_ID) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    const insert_vacancy_query = 'INSERT INTO VACANCY (CARGO, AREA, EXPERIENCIA, IDIOMA, IDIOMA_NIVEL, CIDADE, COMPANY_ID, COMPANY_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     const insert_skills_query = 'INSERT INTO SKILLS (SS_1, SS_2, SS_3, HS_1, HS_1_NIVEL, HS_2, HS_2_NIVEL, HS_3, HS_3_NIVEL, VACANCY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     
 
