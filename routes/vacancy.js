@@ -93,4 +93,37 @@ router.get('/:id', (req, res) => {
     });
 }) 
 
+router.delete('/:id', (req, res) => {
+    setHeadersResponse(res);
+    const idVacancy = req.params.id;
+
+    const select_vacancy_query = 'SELECT * FROM VACANCY WHERE ID = ?'
+    const delete_skills_query = 'DELETE FROM SKILLS WHERE VACANCY_ID = ?'
+    const delete_vacancy_query = 'DELETE FROM VACANCY WHERE ID = ?'
+
+    connection.query(select_vacancy_query, [idVacancy], (err, result) => {
+        if(err){
+            res.write(err);
+        } 
+        if(result.length > 0){
+            connection.query(delete_skills_query, [idVacancy], (err, result) => {
+                if(err){
+                    res.json(err)
+                } else {
+                    connection.query(delete_vacancy_query, [idVacancy], (err, result) => {
+                        if(err){
+                        res.json(err)
+                        }else{
+                            res.json({message: 'Vacancy deleted successfully', code: 200})
+                        }
+                    })
+                }
+            })
+        }
+        else {
+            res.json({message: 'Vacancy not founded', code: 404})
+        }
+    });
+})
+
 module.exports = router;
