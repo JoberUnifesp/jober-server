@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-    host: 'jober.mysql.database.azure.com',
+    host: process.env.DB_HOSTNAME,
     user: process.env.DB_USERNAME,
-    password: 'xgJ3zFFhn5B6wA',
-    database: 'APP'
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 })
 connection.connect((err) => {
     if (err){
