@@ -18,11 +18,11 @@ router.post('/userLike', (req, res) => {
     const user_id = req.body.user_id;
     const vacancy_id = req.body.vacancy_id;
 
-    connection.query("SELECT * FROM MATCHED WHERE VACANCY_ID = ?", [vacancy_id], (err, result) => {
+    connection.query("SELECT * FROM MATCHED WHERE VACANCY_ID = ? AND USER_ID = ?", [vacancy_id, user_id], (err, result) => {
         if(err){
             res.json(err);
         }else if(result.length !== 0){
-            connection.query("UPDATE MATCHED SET USER_ID = ? WHERE VACANCY_ID = ?", [user_id, vacancy_id], (err, match_result) => {
+            connection.query("UPDATE MATCHED SET USER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [vacancy_id, user_id, 1], (err, match_result) => {
                 if(err){
                     res.json(err);
                 }else{
@@ -30,13 +30,60 @@ router.post('/userLike', (req, res) => {
                 }
             })
         }else{
-            connection.query("INSERT INTO MATCHED (USER_ID, VACANCY_ID) VALUES (?, ?)", [user_id, vacancy_id], (err, match_result) => {
+            connection.query("INSERT INTO MATCHED (USER_ID, VACANCY_ID, USER_LIKED) VALUES (?, ?, ?)", [user_id, vacancy_id, 1], (err, match_result) => {
                 if(err){
                     res.json(err);
                 }else{
                     return res.json({status: 200, message: 'vacancy liked'})
                 }
             })
+        }
+    })
+})
+
+router.post('/recruiterLike', (req, res) => {
+    setHeadersResponse(res);
+
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+
+    connection.query("SELECT * FROM MATCHED WHERE VACANCY_ID = ? AND USER_ID = ?", [vacancy_id, user_id], (err, result) => {
+        if(err){
+            res.json(err);
+        }else if(result.length !== 0){
+            connection.query("UPDATE MATCHED SET RECRUITER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [1, vacancy_id, user_id], (err, match_result) => {
+                if(err){
+                    res.json(err);
+                }else{
+                    return res.json({status: 200, message: 'user liked'})
+                }
+            })
+        }else{
+            connection.query("INSERT INTO MATCHED (USER_ID, RECRUITER_LIKED, VACANCY_ID) VALUES (?, ?, ?)", [user_id, 1, vacancy_id], (err, match_result) => {
+                if(err){
+                    res.json(err);
+                }else{
+                    return res.json({status: 200, message: 'user liked'})
+                }
+            })
+        }
+    })
+})
+
+
+router.get('/getRecruiterLike', (req, res) => {
+    setHeadersResponse(res);
+
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+
+    connection.query("SELECT RECRUITER_LIKED FROM MATCHED WHERE USER_ID = ? AND VACANCY_ID = ?", [user_id, vacancy_id], (err, result) => {
+        if(err){
+            res.json(err)
+        }else if(result.length > 0 && result[0].RECRUITER_LIKED === 1){
+            res.json({like: true})
+        }else{
+            res.json({like: false})
         }
     })
 })
