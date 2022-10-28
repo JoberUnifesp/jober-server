@@ -88,5 +88,22 @@ router.get('/getRecruiterLike', (req, res) => {
     })
 })
 
+router.post('/save', (req, res) => {
+    setHeadersResponse(res);
+
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+
+    const save_query = 'INSERT INTO saved_vacancies (USER_ID, VACANCY_ID) VALUES (?, ?)';
+    
+    connection.query(save_query, [user_id, vacancy_id], (err, result) => {
+        if(err){
+            res.json(err)
+        }else{
+            res.json({code: 200, message: 'vacancy was successfully saved'})
+        }
+    })
+
+})
 
 module.exports = router;
