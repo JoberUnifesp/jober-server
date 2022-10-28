@@ -95,13 +95,22 @@ router.post('/save', (req, res) => {
     const user_id = req.body.user_id;
 
     const save_query = 'INSERT INTO saved_vacancies (USER_ID, VACANCY_ID) VALUES (?, ?)';
-    
-    connection.query(save_query, [user_id, vacancy_id], (err, result) => {
+    const select_query = 'SELECT * FROM saved_vacancies WHERE USER_ID = ? AND VACANCY_ID = ?'
+
+    connection.query(select_query, [user_id, vacancy_id], (err, result) => {
         if(err){
             res.json(err)
+        }else if(result.length === 0){
+            connection.query(save_query, [user_id, vacancy_id], (err, result) => {
+                if(err){
+                    res.json(err)
+                }else{
+                    res.json({code: 200, message: 'vacancy was successfully saved'})
+                }
+            })
         }else{
-            res.json({code: 200, message: 'vacancy was successfully saved'})
-        }
+            res.json({code: 200, message: 'vacancy already saved'})
+        }       
     })
 
 })
