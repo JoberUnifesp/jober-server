@@ -74,12 +74,36 @@ router.post('/', (req, res) => {
 
 router.get('/', (req, res) => {
     setHeadersResponse(res);
+    let temp = '';
+
     const select_vacancy_query = 'SELECT * FROM VACANCY JOIN SKILLS ON SKILLS.VACANCY_ID=VACANCY.ID'
     connection.query(select_vacancy_query, (err, result) => {
         if(err){
             res.write(err);
+        }else if(result.length > 0){
+
+            connection.query("SELECT * FROM MATCHED WHERE USER_ID = ?", [req.body.user_id], (err, match_result) => {
+                if(err){
+                    res.json(err)
+                }else if(result.length > 0){
+                    result.map(element => {
+                        match_result.forEach(item => {
+                            if(element.ID === item.VACANCY_ID){
+                                element['like'] = true
+                            }
+                        })
+
+                        if(element.like === undefined){
+                            element['like'] = false
+                        }
+
+                        return element
+                    });
+                    res.send(JSON.stringify(result))
+                }
+            })
+
         }
-        res.send(JSON.stringify(result))
     });
 }) 
 
