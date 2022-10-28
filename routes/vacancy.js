@@ -72,7 +72,7 @@ router.post('/', (req, res) => {
     });
 })
 
-router.get('/', (req, res) => {
+router.get('/allVacancies/:user_id', (req, res) => {
     setHeadersResponse(res);
     let temp = '';
 
@@ -82,7 +82,7 @@ router.get('/', (req, res) => {
             res.write(err);
         }else if(result.length > 0){
 
-            connection.query("SELECT * FROM MATCHED WHERE USER_ID = ?", [req.body.user_id], (err, match_result) => {
+            connection.query("SELECT * FROM MATCHED WHERE USER_ID = ?", [req.params.user_id], (err, match_result) => {
                 if(err){
                     res.json(err)
                 }else if(result.length > 0){
