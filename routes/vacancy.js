@@ -107,14 +107,30 @@ router.get('/allVacancies/:user_id', (req, res) => {
     });
 }) 
 
-router.get('/:id', (req, res) => {
-    const idCompany = req.params.id;
+//get all job vacancies from company
+router.get('/:idCompany', (req, res) => {
+    const idCompany = req.params.idCompany;
     const select_vacancy_query = 'SELECT * FROM VACANCY JOIN SKILLS ON SKILLS.VACANCY_ID=VACANCY.ID WHERE COMPANY_ID = ?'
     connection.query(select_vacancy_query, [idCompany], (err, result) => {
         if(err){
             res.write(err);
         }
         res.send(JSON.stringify(result))
+    });
+}) 
+
+//get one job vacancy
+router.get('/oneVacancy/:idVacancy', (req, res) => {
+    const idVacancy = req.params.idVacancy;
+    const select_one_vacancy_query = 'SELECT * FROM VACANCY JOIN SKILLS ON SKILLS.VACANCY_ID=VACANCY.ID WHERE VACANCY.ID = ?'
+    connection.query(select_one_vacancy_query, [idVacancy], (err, result) => {
+        if(err){
+            res.write(err);
+        } else if(result.length > 0){
+            res.send(JSON.stringify(result))
+        } else {
+            res.json({message: 'Vacancy not founded. Invalid ID', code: 404})
+        }
     });
 }) 
 
@@ -150,5 +166,61 @@ router.delete('/:id', (req, res) => {
         }
     });
 })
+
+router.patch('/:id', (req, res) => {
+    setHeadersResponse(res);
+    const idVacancy = req.params.id;
+
+    const cargo = req.body.cargo;
+    const area = req.body.area;
+    const softSkill1 = req.body.softSkill1;
+    const softSkill2 = req.body.softSkill2;
+    const softSkill3 = req.body.softSkill3;
+    const tempoExperiencia = req.body.tempoExperiencia;
+    const idioma = req.body.idioma;
+    const idiomaNivel = req.body.idiomaNivel;
+    const cidade = req.body.cidade;
+
+    const hardSkill1Desc = req.body.hardSkill1Desc;
+    const hardSkill1Nivel = req.body.hardSkill1Nivel;
+
+    const hardSkill2Desc = req.body.hardSkill2Desc;
+    const hardSkill2Nivel = req.body.hardSkill2Nivel;
+
+    const hardSkill3Desc = req.body.hardSkill3Desc;
+    const hardSkill3Nivel = req.body.hardSkill3Nivel;
+
+    const atributos_vacancy = [cargo, area, tempoExperiencia, idioma, idiomaNivel, cidade, idVacancy];
+    const atributos_skills = [softSkill1, softSkill2, softSkill3, hardSkill1Desc, hardSkill1Nivel, hardSkill2Desc, hardSkill2Nivel, hardSkill3Desc, hardSkill3Nivel, idVacancy];
+
+    const select_vacancy_query = 'SELECT * FROM VACANCY WHERE ID = ?'
+    const update_vacancy_query = 'UPDATE VACANCY SET CARGO = ?, AREA = ?, EXPERIENCIA = ?, IDIOMA = ?, IDIOMA_NIVEL = ?, CIDADE = ? WHERE ID = ?'
+    const update_skills_query = 'UPDATE SKILLS SET SS_1 = ?, SS_2 = ?, SS_3 = ?, HS_1 = ?, HS_1_NIVEL = ?, HS_2 = ?, HS_2_NIVEL = ?, HS_3 = ?, HS_3_NIVEL = ? WHERE VACANCY_ID = ?'
+
+    connection.query(select_vacancy_query, [idVacancy], (err, result) => {
+        if(err){
+            res.write(err);
+        } 
+        if(result.length > 0){
+            connection.query(update_vacancy_query, atributos_vacancy, (err, result) => {
+                if(err){
+                    res.json(err)
+                } else {
+                    connection.query(update_skills_query, atributos_skills, (err, result) => {
+                        if(err){
+                            res.json(err)
+                        }else{
+                            res.json({message: 'Vacancy edited successfully', code: 200})
+                        }
+                    })
+                }
+            })
+        }
+        else {
+            res.json({message: 'Fail to Edit: Vacancy not founded', code: 404})
+        }
+    });
+})
+
 
 module.exports = router;
