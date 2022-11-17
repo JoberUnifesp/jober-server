@@ -62,6 +62,15 @@ async function getLanguages(id){
       }
 }
 
+function format(x){
+  x = JSON.stringify(x); 
+  x = x.toLowerCase(); 
+  x = x.replace(/"|{|/g, ''); 
+  x = x.replace(/,/g, ', '); 
+  x = x.slice(0, -1)
+  return x
+}
+
 
 router.get('/', async (req, res) => {
     setHeadersResponse(res);
@@ -77,11 +86,17 @@ router.get('/', async (req, res) => {
         }
         if(result.length > 0){
             for(i = 0; i < result.length; i++){
-                const exp = await getExperiences(result[i].ID);
-                const grad = await getGraduations(result[i].ID);
-                const soft = await getSoftSkills(result[i].ID);
-                const hard = await getHardSkills(result[i].ID);
-                const lang = await getLanguages(result[i].ID);
+                let exp = await getExperiences(result[i].ID);
+                let grad = await getGraduations(result[i].ID);
+                let soft = await getSoftSkills(result[i].ID);
+                let hard = await getHardSkills(result[i].ID);
+                let lang = await getLanguages(result[i].ID);
+
+                exp = exp.map(format) 
+                grad = grad.map(format) 
+                soft = soft.map(format) 
+                hard = hard.map(format) 
+                lang = lang.map(format) 
                 
 
                 candidates.push({Id: result[i].ID, Nome: result[i].NOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft});
