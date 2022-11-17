@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
-const fetch = require('node-fetch');
+const util = require('util');
 
 function setHeadersResponse(res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,88 +13,60 @@ function setHeadersResponse(res) {
     );
 }
 
-const base_url = "https://jober.azurewebsites.net";
-const local_url = "http://localhost:3001";
+
+const query = util.promisify(connection.query).bind(connection);
 
 async function getExperiences(id){
-    try{
-        const res = await fetch(`${base_url}/UserProfile/ViewExperiences/${id}`, {
-            method: "GET",
-            headers: {
-              'Content-type': 'application/json'
-            }
-          });
-          const data = await res.json();
-          return data
-    }catch(error){
-        return error;
-    }
+    try {
+        const rows = await query(`SELECT CARGO, EMPRESA, INICIO, FIM FROM EXPERIENCES WHERE USER_ID = ${id}`);
+        return rows
+      } catch (e) {
+        return e
+      }
 
 }
 
 async function getGraduations(id){
-    try{
-        const res = await fetch(`${base_url}/UserProfile/ViewGraduations/${id}`, {
-            method: "GET",
-            headers: {
-              'Content-type': 'application/json'
-            }
-          });
-          const data = await res.json();
-          return data
-    }catch(error){
-        return error;
-    }
+    try {
+        const rows = await query(`SELECT CURSO, INSTITUICAO, INICIO, FIM FROM GRADUATIONS WHERE USER_ID = ${id}`);
+        return rows
+      } catch (e) {
+        return e
+      }
 }
 
 async function getSoftSkills(id){
-    try{
-        const res = await fetch(`${base_url}/UserProfile/ViewSoftSkills/${id}`, {
-            method: "GET",
-            headers: {
-              'Content-type': 'application/json'
-            }
-          });
-          const data = await res.json();
-          return data
-    }catch(error){
-        return error;
-    }
+    try {
+        const rows = await query(`SELECT NOME FROM SOFTSKILLS WHERE USER_ID = ${id}`);
+        return rows
+      } catch (e) {
+        return e
+      }
 }
 
 async function getHardSkills(id){
-    try{
-        const res = await fetch(`${base_url}/UserProfile/ViewHardSkills/${id}`, {
-            method: "GET",
-            headers: {
-              'Content-type': 'application/json'
-            }
-          });
-          const data = await res.json();
-          return data
-    }catch(error){
-        return error;
-    }
+    try {
+        const rows = await query(`SELECT NOME, NIVEL FROM HARDSKILLS WHERE USER_ID = ${id}`);
+        return rows
+      } catch (e) {
+        return e
+      }
 }
 
 async function getLanguages(id){
-    try{
-        const res = await fetch(`${base_url}/UserProfile/ViewLanguages/${id}`, {
-            method: "GET",
-            headers: {
-              'Content-type': 'application/json'
-            }
-          });
-          const data = await res.json();
-          return data
-    }catch(error){
-        return error;
-    }
+    try {
+        const rows = await query(`SELECT NOME, NIVEL FROM LANGUAGES WHERE USER_ID = ${id}`);
+        return rows
+      } catch (e) {
+        return e
+      }
 }
 
 
 router.get('/', async (req, res) => {
     setHeadersResponse(res);
+
+
     let candidates = [];
 
     const select_ids = "SELECT ID, NOME FROM USER"
