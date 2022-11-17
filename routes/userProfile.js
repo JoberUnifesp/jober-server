@@ -204,7 +204,7 @@ router.get('/ViewExperiences/:id', (req, res) => {
         "Origin, X-Requested-With, Content-Type, Accept"
     );
 
-    connection.query("SELECT * FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+    connection.query("SELECT CARGO, EMPRESA, INICIO, FIM FROM EXPERIENCES WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
         }
@@ -229,7 +229,7 @@ router.get('/ViewGraduations/:id', (req, res) => {
         "Origin, X-Requested-With, Content-Type, Accept"
     );
 
-    connection.query("SELECT * FROM GRADUATIONS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+    connection.query("SELECT CURSO, INSTITUICAO, INICIO, FIM FROM GRADUATIONS WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
         }
@@ -255,7 +255,7 @@ router.get('/ViewHardSkills/:id', (req, res) => {
         "Origin, X-Requested-With, Content-Type, Accept"
     );
 
-    connection.query("SELECT * FROM HARDSKILLS WHERE USER_ID = ?", [req.params.id], (err, result) => {
+    connection.query("SELECT NOME, NIVEL FROM HARDSKILLS WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
         }
@@ -280,7 +280,7 @@ router.get('/ViewLanguages/:id', (req, res) => {
         "Origin, X-Requested-With, Content-Type, Accept"
     );
 
-    connection.query("SELECT * FROM LANGUAGES WHERE USER_ID = ?", [req.params.id], (err, result) => {
+    connection.query("SELECT NOME, NIVEL FROM LANGUAGES WHERE USER_ID = ?", [req.params.id], (err, result) => {
         if(err){
             res.write(err);
         }
