@@ -67,6 +67,7 @@ function format(x){
   x = x.toLowerCase(); 
   x = x.replace(/"|{|/g, ''); 
   x = x.replace(/,/g, ', '); 
+  x = x.replace(/:/g, ': ');
   x = x.slice(0, -1)
   return x
 }
