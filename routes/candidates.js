@@ -84,7 +84,7 @@ router.get('/', async (req, res) => {
                 const lang = await getLanguages(result[i].ID);
                 
 
-                candidates.push({id: result[i].ID, nome: result[i].NOME, experiences: exp, graduations: grad, hardskills: hard, softskills: soft, languages: lang});
+                candidates.push({Id: result[i].ID, Nome: result[i].NOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft});
             }
 
             res.json(candidates)
