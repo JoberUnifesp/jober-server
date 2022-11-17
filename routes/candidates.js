@@ -68,8 +68,8 @@ function format(x){
   x = x.replace(/"|{|/g, ''); 
   x = x.replace(/,/g, ', '); 
   x = x.replace(/:/g, ': ');
-  x = x.slice(0, -1)
-  return x
+  x = x.slice(0, -1);
+  return x;
 }
 
 
