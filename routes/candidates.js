@@ -117,7 +117,7 @@ router.get('/', async (req, res) => {
 
             res.json(candidates)
         }else{
-            res.json({code: 100, message: 'no users registered yet'});
+            res.json(null);
         }
     })
 })
