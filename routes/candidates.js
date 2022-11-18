@@ -78,6 +78,10 @@ function format(x){
   x = x.replace(/:/g, ': ');
   x = x.replace(/[\\]/g, '');
   x = x.slice(0, -1);
+
+  if(x.includes('nome:')){
+    x = x.replace(/nome: |, nivel:/g, '');
+  }
   return x;
 }
 
