@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
 
     let candidates = [];
 
-    const select_ids = "SELECT ID, NOME FROM USER"
+    const select_ids = "SELECT ID, NOME, SOBRENOME FROM USER"
 
     connection.query(select_ids, async (err, result) => {
         if(err){
@@ -129,7 +129,7 @@ router.get('/', async (req, res) => {
                 lang = lang.map(format) 
                 
 
-                candidates.push({Id: result[i].ID, Nome: result[i].NOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft});
+                candidates.push({Id: result[i].ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft});
             }
 
             res.json(candidates)
