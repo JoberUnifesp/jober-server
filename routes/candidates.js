@@ -62,6 +62,7 @@ async function getLanguages(id){
       }
 }
 
+
 function format(x){
   if(x.INICIO != undefined){
     x.INICIO = JSON.stringify(x.INICIO)
@@ -82,7 +83,21 @@ function format(x){
   if(x.includes('nome:')){
     x = x.replace(/nome: |, nivel:/g, '');
   }
-  return x;
+  if(x.includes('empresa')){
+    x = x.replace(/empresa/, 'Empresa');
+    
+    x = x.replace('fim', 'Fim');
+    x = x.replace('inicio', 'Início');
+  }
+  if(x.includes('instituicao')){
+    x = x.replace(/instituicao/, 'Instituição');
+    
+    x = x.replace('fim', 'Fim');
+    x = x.replace('inicio', 'Início');
+  }
+
+  
+  return x.charAt(0).toUpperCase() + x.slice(1);
 }
 
 
