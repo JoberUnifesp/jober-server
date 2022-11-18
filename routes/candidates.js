@@ -63,11 +63,20 @@ async function getLanguages(id){
 }
 
 function format(x){
+  if(x.INICIO != undefined){
+    x.INICIO = JSON.stringify(x.INICIO)
+    x.INICIO = x.INICIO.substring(0, x.INICIO.indexOf('T'))
+    x.FIM = JSON.stringify(x.FIM)
+    x.FIM = x.FIM.substring(0, x.FIM.indexOf('T'))
+  }
+
+
   x = JSON.stringify(x); 
   x = x.toLowerCase(); 
   x = x.replace(/"|{|/g, ''); 
   x = x.replace(/,/g, ', '); 
   x = x.replace(/:/g, ': ');
+  x = x.replace(/[\\]/g, '');
   x = x.slice(0, -1);
   return x;
 }
@@ -92,6 +101,7 @@ router.get('/', async (req, res) => {
                 let soft = await getSoftSkills(result[i].ID);
                 let hard = await getHardSkills(result[i].ID);
                 let lang = await getLanguages(result[i].ID);
+
 
                 exp = exp.map(format) 
                 grad = grad.map(format) 
