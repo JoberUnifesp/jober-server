@@ -137,9 +137,6 @@ router.patch('/profile/:id', (req, res) => {
                 if(result.length == 0) {
                     return res.status(200).json({message: 'company profile updated sucessfully', code: 200});
                 }
-                if(result.length > 0){
-                    return res.status(409).json({message: 'company profile already registered', code: 409});
-                }
             })
             return res.status(200).json({message: 'company profile updated sucessfully', code: 200});
         }
