@@ -130,4 +130,38 @@ router.get('/', async (req, res) => {
     })
 })
 
-module.exports = router;
+async function getCandidateInfo(id) {
+  let exp = await getExperiences(id);
+  let grad = await getGraduations(id);
+  let soft = await getSoftSkills(id);
+  let hard = await getHardSkills(id);
+  let lang = await getLanguages(id);
+
+  exp = exp.map(format) 
+  grad = grad.map(format) 
+  soft = soft.map(format) 
+  hard = hard.map(format) 
+  lang = lang.map(format) 
+
+  return {exp, grad, hard, lang, soft}
+}
+
+router.get('/:idCandidate', async (req, res) => {
+  const idCandidate = req.params.idCandidate;
+
+  const select_candidate = "SELECT ID, NOME, SOBRENOME FROM USER WHERE ID = ?"
+
+  connection.query(select_candidate, [idCandidate], async (err, result) => {
+    if(err){
+        throw err
+    } if (result.length > 0) {
+        let infos = await getCandidateInfo(result[0].ID)
+        candidate = {Id: result[0].ID, Nome: result[0].NOME + " " + result[0].SOBRENOME, Experiencias: infos.exp, Formacoes: infos.grad, HardSkills: infos.hard, Idiomas: infos.lang, softSkills: infos.soft}
+        res.json(candidate)
+    } else {
+        res.status(404).json({message: 'Candidate not found', code: 404});
+    }
+  });
+})
+
+module.exports = {router, getCandidateInfo};

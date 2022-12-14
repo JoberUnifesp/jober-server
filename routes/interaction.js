@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
 const {setHeadersResponse} = require('../helper/headers')
+const {getCandidateInfo} = require('./candidates')
 
 router.post('/userLike', (req, res) => {
     setHeadersResponse(res);
@@ -133,6 +134,28 @@ router.post('/pass', (req, res) => {
         }       
     })
 
+})
+
+router.get('/matches/candidates/:idVacancy', async (req, res) => {
+    const idVacancy = req.params.idVacancy;
+    const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, USER.NOME, USER.SOBRENOME FROM MATCHED JOIN USER ON USER.ID=MATCHED.USER_ID WHERE VACANCY_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
+    let matches = []
+    
+    connection.query(select_matches, [idVacancy], async (err, result) => {
+        if(err){
+            res.write(err);
+        } if (result.length > 0) {
+            for(i = 0; i < result.length; i++){
+              let infos = await getCandidateInfo(result[i].USER_ID)
+              
+              matches.push({Id: result[i].ID, User_id: result[i].USER_ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: infos.exp, Formacoes: infos.grad, HardSkills: infos.hard, Idiomas: infos.lang, softSkills: infos.soft});
+            }
+  
+            res.json(matches)
+        } else {
+          return res.status(404).json({message: 'Not found matches for this vacancy', code: 404});
+        }
+    });
 })
 
 module.exports = router;
