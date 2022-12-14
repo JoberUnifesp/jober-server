@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const connection = require('../databaseConnection')
 const bcrypt = require('bcryptjs')
+const {setHeadersResponse} = require('../helper/headers')
 
 const router = express.Router();
 
@@ -10,12 +11,7 @@ app.use(express.json())
 app.use(cors())
 
 router.post('/SignUp', (req, res) => {     
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+    setHeadersResponse(res)
       
     const nome = req.body.nome;
     const sobrenome = req.body.sobrenome;
@@ -50,12 +46,7 @@ router.post('/SignUp', (req, res) => {
 
 
 router.post('/login', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
+    setHeadersResponse(res)
 
     const email = req.body.email;
     const senha = req.body.senha;

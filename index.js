@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
 const bcrypt = require('bcryptjs')
+const {setHeadersResponse} = require('../helper/headers')
 
 app.use(express.json())
 app.use(cors())
@@ -19,13 +20,8 @@ app.use("/vacancy", vacancy);
 app.use("/interaction", interaction);
 app.use("/candidates", candidates);
 
-app.post('/SignUp', (req, res) => {     
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+app.post('/SignUp', (req, res) => {    
+    setHeadersResponse(res) 
       
     const nome = req.body.nome;
     const sobrenome = req.body.sobrenome;
@@ -60,12 +56,7 @@ app.post('/SignUp', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
+    setHeadersResponse(res) 
 
     const email = req.body.email;
     const senha = req.body.senha;

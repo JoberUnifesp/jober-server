@@ -3,16 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
 const util = require('util');
-
-function setHeadersResponse(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-}
-
+const {setHeadersResponse} = require('../helper/headers')
 
 const query = util.promisify(connection.query).bind(connection);
 

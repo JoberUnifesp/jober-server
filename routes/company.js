@@ -2,15 +2,7 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../databaseConnection')
 const bcrypt = require('bcryptjs')
-
-function setHeadersResponse(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-}
+const {setHeadersResponse} = require('../helper/headers')
 
 router.post('/SignUp', (req, res) => {
     setHeadersResponse(res);
