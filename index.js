@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
 const bcrypt = require('bcryptjs')
-const {setHeadersResponse} = require('../helper/headers')
+const {setHeadersResponse} = require('./helper/headers')
 
 app.use(express.json())
 app.use(cors())
@@ -12,13 +12,13 @@ const company = require("./routes/company.js");
 const userProfile = require("./routes/userProfile.js");
 const vacancy = require("./routes/vacancy.js");
 const interaction = require("./routes/interaction.js");
-const candidates = require("./routes/candidates.js");
+const {router} = require("./routes/candidates.js");
 
 app.use("/company", company);
 app.use("/UserProfile", userProfile);
 app.use("/vacancy", vacancy);
 app.use("/interaction", interaction);
-app.use("/candidates", candidates);
+app.use("/candidates", router);
 
 app.post('/SignUp', (req, res) => {    
     setHeadersResponse(res) 
