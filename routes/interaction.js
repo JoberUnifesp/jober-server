@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
-const {setHeadersResponse} = require('../helper/headers')
+const {setHeadersResponse, setHeadersResponseCredentials} = require('../helper/headers')
 const {getCandidateInfo} = require('./candidates')
 
 router.post('/userLike', (req, res) => {
