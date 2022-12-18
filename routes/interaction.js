@@ -137,6 +137,8 @@ router.post('/pass', (req, res) => {
 })
 
 router.get('/matches/candidates/:idVacancy', async (req, res) => {
+    setHeadersResponse(res);
+    
     const idVacancy = req.params.idVacancy;
     const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, USER.NOME, USER.SOBRENOME FROM MATCHED JOIN USER ON USER.ID=MATCHED.USER_ID WHERE VACANCY_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
     let matches = []
