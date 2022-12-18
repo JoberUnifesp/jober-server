@@ -3,7 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
 const util = require('util');
-const {setHeadersResponse} = require('../helper/headers')
+const {setHeadersResponse, setHeadersResponseCredentials} = require('../helper/headers')
 
 const query = util.promisify(connection.query).bind(connection);
 
@@ -53,6 +53,15 @@ async function getLanguages(id){
       }
 }
 
+async function getLike(id, vacancy_id){
+  try {
+      const row = await query(`SELECT USER_LIKED FROM MATCHED WHERE USER_ID = ${id} AND VACANCY_ID = ${vacancy_id}`);
+      return row
+    } catch (e) {
+      return e
+    }
+}
+
 
 function format(x){
   if(x.INICIO != undefined){
@@ -93,13 +102,7 @@ function format(x){
 
 
 router.get('/:idVacancy', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader("Access-Control-Allow-Methods", "*");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  res.header(
-  "Access-Control-Allow-Headers",
-  "Origin, X-Requested-With, Content-Type, Accept"
-  );  
+  setHeadersResponseCredentials(res);
 
     const idVacancy = req.params.idVacancy;
     console.log(idVacancy);
@@ -119,7 +122,14 @@ router.get('/:idVacancy', async (req, res) => {
                 let soft = await getSoftSkills(result[i].ID);
                 let hard = await getHardSkills(result[i].ID);
                 let lang = await getLanguages(result[i].ID);
+                let like = await getLike(result[i].ID, idVacancy);
+                let value = false
 
+                if(like[0] !== undefined){
+                  if(like[0].USER_LIKED !== null){
+                    value = true
+                  }
+                }
 
                 exp = exp.map(format) 
                 grad = grad.map(format) 
@@ -128,7 +138,7 @@ router.get('/:idVacancy', async (req, res) => {
                 lang = lang.map(format) 
                 
 
-                candidates.push({Id: result[i].ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft});
+                candidates.push({Id: result[i].ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft, like: value});
             }
 
             res.json(candidates)

@@ -15,7 +15,7 @@ router.post('/userLike', (req, res) => {
         if(err){
             res.json(err);
         }else if(result.length !== 0){
-            connection.query("UPDATE MATCHED SET USER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [vacancy_id, user_id, 1], (err, match_result) => {
+            connection.query("UPDATE MATCHED SET USER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [1, vacancy_id, user_id], (err, match_result) => {
                 if(err){
                     res.json(err);
                 }else{
@@ -100,7 +100,6 @@ router.get('/getUserLike', (req, res) => {
 
 router.post('/save', (req, res) => {
     setHeadersResponse(res);
-    
 
     const vacancy_id = req.body.vacancy_id;
     const user_id = req.body.user_id;
@@ -155,7 +154,7 @@ router.post('/pass', (req, res) => {
 })
 
 router.get('/matches/candidates/:idVacancy', async (req, res) => {
-    setHeadersResponse(res);
+    setHeadersResponseCredentials(res);
 
     const idVacancy = req.params.idVacancy;
     const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, USER.NOME, USER.SOBRENOME FROM MATCHED JOIN USER ON USER.ID=MATCHED.USER_ID WHERE VACANCY_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
@@ -167,6 +166,7 @@ router.get('/matches/candidates/:idVacancy', async (req, res) => {
         } if (result.length > 0) {
             for(i = 0; i < result.length; i++){
               let infos = await getCandidateInfo(result[i].USER_ID)
+              console.log(result[i])
               
               matches.push({Id: result[i].ID, User_id: result[i].USER_ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: infos.exp, Formacoes: infos.grad, HardSkills: infos.hard, Idiomas: infos.lang, softSkills: infos.soft});
             }
