@@ -163,7 +163,7 @@ router.get('/matches/candidates/:idVacancy', async (req, res) => {
     
     connection.query(select_matches, [idVacancy], async (err, result) => {
         if(err){
-            res.write(err);
+            res.json(err);
         } if (result.length > 0) {
             for(i = 0; i < result.length; i++){
               let infos = await getCandidateInfo(result[i].USER_ID)
