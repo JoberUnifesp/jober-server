@@ -153,7 +153,7 @@ router.get('/matches/candidates/:idVacancy', async (req, res) => {
   
             res.json(matches)
         } else {
-          return res.status(404).json({message: 'Not found matches for this vacancy', code: 404});
+          return res.json({message: 'Not found matches for this vacancy', code: 404});
         }
     });
 })
