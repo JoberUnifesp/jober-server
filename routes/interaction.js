@@ -81,8 +81,26 @@ router.get('/getRecruiterLike', (req, res) => {
     })
 })
 
+router.get('/getUserLike', (req, res) => {
+    setHeadersResponse(res);
+
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+
+    connection.query("SELECT USER_LIKED FROM MATCHED WHERE USER_ID = ? AND VACANCY_ID = ?", [user_id, vacancy_id], (err, result) => {
+        if(err){
+            res.json(err)
+        }else if(result.length > 0 && result[0].USER_LIKED === 1){
+            res.json({like: true})
+        }else{
+            res.json({like: false})
+        }
+    })
+})
+
 router.post('/save', (req, res) => {
     setHeadersResponse(res);
+    
 
     const vacancy_id = req.body.vacancy_id;
     const user_id = req.body.user_id;
@@ -137,7 +155,7 @@ router.post('/pass', (req, res) => {
 })
 
 router.get('/matches/candidates/:idVacancy', async (req, res) => {
-    setHeadersResponseCredentials(res)
+    setHeadersResponse(res);
 
     const idVacancy = req.params.idVacancy;
     const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, USER.NOME, USER.SOBRENOME FROM MATCHED JOIN USER ON USER.ID=MATCHED.USER_ID WHERE VACANCY_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
