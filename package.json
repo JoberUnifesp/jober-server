@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index --passWithNoTests",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "Beatriz",
