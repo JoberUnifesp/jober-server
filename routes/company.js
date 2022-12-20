@@ -2,7 +2,15 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../databaseConnection')
 const bcrypt = require('bcryptjs')
-const {setHeadersResponse} = require('../helper/headers')
+
+function setHeadersResponse(res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+}
 
 router.post('/SignUp', (req, res) => {
     setHeadersResponse(res);
@@ -128,6 +136,9 @@ router.patch('/profile/:id', (req, res) => {
                 }
                 if(result.length == 0) {
                     return res.status(200).json({message: 'company profile updated sucessfully', code: 200});
+                }
+                if(result.length > 0){
+                    return res.status(409).json({message: 'company profile already registered', code: 409});
                 }
             })
             return res.status(200).json({message: 'company profile updated sucessfully', code: 200});

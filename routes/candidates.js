@@ -3,7 +3,18 @@ const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
 const util = require('util');
-const {setHeadersResponse, setHeadersResponseCredentials} = require('../helper/headers')
+
+
+function setHeadersResponse(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+  );
+}
+
 
 const query = util.promisify(connection.query).bind(connection);
 
@@ -63,6 +74,7 @@ async function getLike(id, vacancy_id){
 }
 
 
+
 function format(x){
   if(x.INICIO != undefined){
     x.INICIO = JSON.stringify(x.INICIO)
@@ -102,8 +114,7 @@ function format(x){
 
 
 router.get('/:idVacancy', async (req, res) => {
-  setHeadersResponseCredentials(res);
-
+    setHeadersResponse(res);
     const idVacancy = req.params.idVacancy;
     console.log(idVacancy);
 
@@ -124,12 +135,12 @@ router.get('/:idVacancy', async (req, res) => {
                 let lang = await getLanguages(result[i].ID);
                 let like = await getLike(result[i].ID, idVacancy);
                 let value = false
-
                 if(like[0] !== undefined){
                   if(like[0].USER_LIKED !== null){
                     value = true
                   }
                 }
+
 
                 exp = exp.map(format) 
                 grad = grad.map(format) 
@@ -182,4 +193,5 @@ router.get('/:idCandidate', async (req, res) => {
   });
 })
 
-module.exports = {router, getCandidateInfo};
+
+module.exports = router;

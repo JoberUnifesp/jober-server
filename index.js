@@ -3,7 +3,6 @@ const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
 const bcrypt = require('bcryptjs')
-const {setHeadersResponse} = require('./helper/headers')
 
 app.use(express.json())
 app.use(cors())
@@ -12,16 +11,21 @@ const company = require("./routes/company.js");
 const userProfile = require("./routes/userProfile.js");
 const vacancy = require("./routes/vacancy.js");
 const interaction = require("./routes/interaction.js");
-const {router} = require("./routes/candidates.js");
+const candidates = require("./routes/candidates.js");
 
 app.use("/company", company);
 app.use("/UserProfile", userProfile);
 app.use("/vacancy", vacancy);
 app.use("/interaction", interaction);
-app.use("/candidates", router);
+app.use("/candidates", candidates);
 
-app.post('/SignUp', (req, res) => {    
-    setHeadersResponse(res) 
+app.post('/SignUp', (req, res) => {     
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       
     const nome = req.body.nome;
     const sobrenome = req.body.sobrenome;
@@ -56,7 +60,12 @@ app.post('/SignUp', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    setHeadersResponse(res) 
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
 
     const email = req.body.email;
     const senha = req.body.senha;
@@ -128,3 +137,8 @@ app.set('port', port);
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
+
+
+
+
+

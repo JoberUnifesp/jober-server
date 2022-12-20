@@ -2,8 +2,16 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const connection = require('../databaseConnection')
-const {setHeadersResponse, setHeadersResponseCredentials} = require('../helper/headers')
 const {getCandidateInfo} = require('./candidates')
+
+function setHeadersResponse(res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Methods", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+}
 
 router.post('/userLike', (req, res) => {
     setHeadersResponse(res);
@@ -15,7 +23,7 @@ router.post('/userLike', (req, res) => {
         if(err){
             res.json(err);
         }else if(result.length !== 0){
-            connection.query("UPDATE MATCHED SET USER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [1, vacancy_id, user_id], (err, match_result) => {
+            connection.query("UPDATE MATCHED SET USER_LIKED = ? WHERE VACANCY_ID = ? AND USER_ID = ?", [vacancy_id, user_id, 1], (err, match_result) => {
                 if(err){
                     res.json(err);
                 }else{
@@ -81,23 +89,6 @@ router.get('/getRecruiterLike', (req, res) => {
     })
 })
 
-router.get('/getUserLike', (req, res) => {
-    setHeadersResponse(res);
-
-    const vacancy_id = req.body.vacancy_id;
-    const user_id = req.body.user_id;
-
-    connection.query("SELECT USER_LIKED FROM MATCHED WHERE USER_ID = ? AND VACANCY_ID = ?", [user_id, vacancy_id], (err, result) => {
-        if(err){
-            res.json(err)
-        }else if(result.length > 0 && result[0].USER_LIKED === 1){
-            res.json({like: true})
-        }else{
-            res.json({like: false})
-        }
-    })
-})
-
 router.post('/save', (req, res) => {
     setHeadersResponse(res);
 
@@ -153,9 +144,23 @@ router.post('/pass', (req, res) => {
 
 })
 
-router.get('/matches/candidates/:idVacancy', async (req, res) => {
-    setHeadersResponseCredentials(res);
+router.get('/getUserLike', (req, res) => {
+    setHeadersResponse(res);
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+    connection.query("SELECT USER_LIKED FROM MATCHED WHERE USER_ID = ? AND VACANCY_ID = ?", [user_id, vacancy_id], (err, result) => {
+        if(err){
+            res.json(err)
+        }else if(result.length > 0 && result[0].USER_LIKED === 1){
+            res.json({like: true})
+        }else{
+            res.json({like: false})
+        }
+    })
+})
 
+router.get('/matches/candidates/:idVacancy', async (req, res) => {
+    setHeadersResponse(res);
     const idVacancy = req.params.idVacancy;
     const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, USER.NOME, USER.SOBRENOME FROM MATCHED JOIN USER ON USER.ID=MATCHED.USER_ID WHERE VACANCY_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
     let matches = []
@@ -165,10 +170,8 @@ router.get('/matches/candidates/:idVacancy', async (req, res) => {
             res.json(err);
         } if (result.length > 0) {
             for(i = 0; i < result.length; i++){
-              let infos = await getCandidateInfo(result[i].USER_ID)
-              console.log(result[i])
               
-              matches.push({Id: result[i].ID, User_id: result[i].USER_ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: infos.exp, Formacoes: infos.grad, HardSkills: infos.hard, Idiomas: infos.lang, softSkills: infos.soft});
+              matches.push({Id: result[i].ID, User_id: result[i].USER_ID, Nome: result[i].NOME + " " + result[i].SOBRENOME});
             }
   
             res.json(matches)
