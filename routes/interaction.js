@@ -116,34 +116,6 @@ router.post('/save', (req, res) => {
 
 })
 
-
-router.post('/pass', (req, res) => {
-    setHeadersResponse(res);
-
-    const vacancy_id = req.body.vacancy_id;
-    const user_id = req.body.user_id;
-
-    const save_query = 'INSERT INTO passed_vacancies (USER_ID, VACANCY_ID) VALUES (?, ?)';
-    const select_query = 'SELECT * FROM passed_vacancies WHERE USER_ID = ? AND VACANCY_ID = ?'
-
-    connection.query(select_query, [user_id, vacancy_id], (err, result) => {
-        if(err){
-            res.json(err)
-        }else if(result.length === 0){
-            connection.query(save_query, [user_id, vacancy_id], (err, result) => {
-                if(err){
-                    res.json(err)
-                }else{
-                    res.json({code: 200, message: 'vacancy was successfully passed'})
-                }
-            })
-        }else{
-            res.json({code: 200, message: 'vacancy already passed'})
-        }       
-    })
-
-})
-
 router.get('/getUserLike', (req, res) => {
     setHeadersResponse(res);
     const vacancy_id = req.body.vacancy_id;
