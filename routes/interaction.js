@@ -181,4 +181,26 @@ router.get('/matches/candidates/:idVacancy', async (req, res) => {
     });
 })
 
+router.get('/matches/vacancies/:idUser', async (req, res) => {
+    setHeadersResponse(res);
+    const idUser = req.params.idUser;
+    const select_matches = "SELECT MATCHED.ID, USER_ID, VACANCY_ID, CARGO, COMPANY_NAME FROM MATCHED JOIN VACANCY ON VACANCY.ID=MATCHED.VACANCY_ID WHERE USER_ID = ? AND USER_LIKED = 1 AND RECRUITER_LIKED = 1"
+    let matches = []
+    
+    connection.query(select_matches, [idUser], async (err, result) => {
+        if(err){
+            res.json(err);
+        } if (result.length > 0) {
+            for(i = 0; i < result.length; i++){
+              
+              matches.push({Id: result[i].ID, Vacancy_id: result[i].VACANCY_ID, Nome: result[i].CARGO + " (" + result[i].COMPANY_NAME + ")"});
+            }
+  
+            res.json(matches)
+        } else {
+          return res.json({message: 'Matches werent found', code: 404});
+        }
+    });
+})
+
 module.exports = router;
