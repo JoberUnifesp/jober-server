@@ -116,6 +116,37 @@ router.post('/save', (req, res) => {
 
 })
 
+
+
+router.post('/saveUser', (req, res) => {
+    setHeadersResponse(res);
+
+    const vacancy_id = req.body.vacancy_id;
+    const user_id = req.body.user_id;
+
+    const save_query = 'INSERT INTO saved_users (VACANCY_ID, USER_ID) VALUES (?, ?)';
+    const select_query = 'SELECT * FROM saved_users WHERE VACANCY_ID = ? AND USER_ID = ? '
+
+    connection.query(select_query, [vacancy_id, user_id], (err, result) => {
+        if(err){
+            res.json(err)
+        }else if(result.length === 0){
+            connection.query(save_query, [vacancy_id, user_id], (err, result) => {
+                if(err){
+                    res.json(err)
+                }else{
+                    res.json({code: 200, message: 'user was successfully saved'})
+                }
+            })
+        }else{
+            res.json({code: 200, message: 'user already saved'})
+        }       
+    })
+
+})
+
+
+
 router.get('/getUserLike', (req, res) => {
     setHeadersResponse(res);
     const vacancy_id = req.body.vacancy_id;
@@ -173,6 +204,48 @@ router.get('/matches/vacancies/:idUser', async (req, res) => {
           return res.json({message: 'Matches werent found', code: 404});
         }
     });
+})
+
+router.get('/saved_vacancies/:idUser', (req, res) => {
+    setHeadersResponse(res);
+    
+    const idUser = req.params.idUser;
+    let saved = []
+    connection.query("SELECT SAVED_VACANCIES.ID, VACANCY.CARGO, VACANCY.COMPANY_NAME, VACANCY_ID FROM VACANCY JOIN SAVED_VACANCIES ON VACANCY.ID = VACANCY_ID WHERE USER_ID = ?", [idUser], (err, result) => {
+        if(err){
+            res.json(err);
+        } if (result.length > 0) {
+            for(i = 0; i < result.length; i++){
+              
+                saved.push({Id: result[i].ID, Vacancy_id: result[i].VACANCY_ID, Nome: result[i].CARGO + " (" + result[i].COMPANY_NAME + ")"});
+            }
+    
+            res.json(saved)
+        }else{
+            res.json({message: 'no saved vacancies', code: 404});
+        }
+    })
+})
+
+
+router.get('/saved_users/:idVacancy', (req, res) => {
+    setHeadersResponse(res);
+    
+    const idVacancy = req.params.idVacancy;
+    let saved = []
+    connection.query("SELECT SAVED_USERS.ID, USER.NOME, USER.SOBRENOME, USER_ID FROM USER JOIN SAVED_USERS ON USER.ID = USER_ID WHERE VACANCY_ID = ?", [idVacancy], (err, result) => {
+        if(err){
+            res.json(err);
+        } if (result.length > 0) {
+            for(i = 0; i < result.length; i++){
+                saved.push({Id: result[i].ID, User_id: result[i].USER_ID, Nome: result[i].NOME + ' ' + result[i].SOBRENOME});
+            }
+    
+            res.json(saved)
+        }else{
+            res.json({message: 'no saved users for this vacancy', code: 404});
+        }
+    })
 })
 
 module.exports = router;
