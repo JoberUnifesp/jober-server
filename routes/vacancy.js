@@ -72,9 +72,56 @@ router.post('/', (req, res) => {
     });
 })
 
+//--------------------------------------
+
+function calculateScore(vacancies, userAtributes){
+
+    levels = [{name: 'básico', value: 0}, {name: 'intermediário', value: 1}, {name: 'avançado', value: 2}]
+
+    for(i=0; i<vacancies.length; i++){
+        score = 0;
+        for(j=0; j<userAtributes.length; j++){
+            if(userAtributes[j].NOME.toLowerCase().includes(vacancies[i].HS_1.toLowerCase())){
+                score += 1
+
+                let user_level_value = levels.find(item => item.name == userAtributes[j].NIVEL.toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancies[i].HS_1_NIVEL.toLowerCase()).value
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+            
+
+            if(userAtributes[j].NOME.toLowerCase().includes(vacancies[i].HS_2.toLowerCase())){
+                score += 1
+                let user_level_value = levels.find(item => item.name == userAtributes[j].NIVEL.toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancies[i].HS_2_NIVEL.toLowerCase()).value
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+
+            if(userAtributes[j].NOME.toLowerCase().includes(vacancies[i].HS_3.toLowerCase())){
+                score += 1
+                let user_level_value = levels.find(item => item.name == userAtributes[j].NIVEL.toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancies[i].HS_3_NIVEL.toLowerCase()).value
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+        }
+        vacancies[i]['score'] = score;
+    }
+
+    return vacancies;
+}
+
+//--------------------------------------
+
 router.get('/allVacancies/:user_id', (req, res) => {
     setHeadersResponse(res);
     let temp = '';
+    let vacancies = '';
 
     const select_vacancy_query = 'SELECT * FROM VACANCY JOIN SKILLS ON SKILLS.VACANCY_ID=VACANCY.ID'
     connection.query(select_vacancy_query, (err, result) => {
@@ -99,7 +146,19 @@ router.get('/allVacancies/:user_id', (req, res) => {
 
                         return element
                     });
-                    res.send(JSON.stringify(result))
+
+                    connection.query("SELECT * FROM HARDSKILLS WHERE USER_ID = ?", [req.params.user_id], (err, skills_result) => {
+                        if(err){
+                            res.json(err)
+                        }else if(skills_result.length > 0){
+                            vacancies = calculateScore(result, skills_result)
+                            vacancies.sort( (a,b) => b.score - a.score ); //sort in descending order
+                    
+                            res.send(JSON.stringify(vacancies))
+                        }else{
+                            res.json({message: "No skills registered"})
+                        }
+                    })
                 }
             })
 

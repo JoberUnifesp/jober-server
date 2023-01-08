@@ -112,6 +112,53 @@ function format(x){
   return x.charAt(0).toUpperCase() + x.slice(1);
 }
 
+//------------------------------------------------------------------------------
+function calculateScore(vacancyReqs, candidates){
+
+    levels = [{name: 'básico', value: 0}, {name: 'intermediário', value: 1}, {name: 'avançado', value: 2}]
+
+    for(i=0; i<candidates.length; i++){
+        score = 0;
+        for(j=0; j<candidates[i].HardSkills.length; j++){
+            let skill = candidates[i].HardSkills[j].split(' ');
+
+            if(skill[0].toLowerCase().includes(vacancyReqs[0].HS_1.toLowerCase())){
+                score += 1
+
+                let user_level_value = levels.find(item => item.name == skill[1].toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancyReqs[0].HS_1_NIVEL.toLowerCase()).value
+
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+            
+
+            if(skill[0].toLowerCase().includes(vacancyReqs[0].HS_2.toLowerCase())){
+                score += 1
+                let user_level_value = levels.find(item => item.name == skill[1].toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancyReqs[0].HS_2_NIVEL.toLowerCase()).value
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+
+            if(skill[0].toLowerCase().includes(vacancyReqs[0].HS_3.toLowerCase())){
+                score += 1
+                let user_level_value = levels.find(item => item.name == skill[1].toLowerCase()).value
+                let vacancy_level_value = levels.find(item => item.name == vacancyReqs[0].HS_3_NIVEL.toLowerCase()).value
+                if(vacancy_level_value <= user_level_value){
+                    score += 1
+                }
+            }
+        }
+        candidates[i]['score'] = score;
+    }
+
+    return candidates;
+}
+//------------------------------------------------------------------------------
+
 
 router.get('/:idVacancy', async (req, res) => {
     setHeadersResponse(res);
@@ -121,6 +168,7 @@ router.get('/:idVacancy', async (req, res) => {
     let candidates = [];
 
     const select_ids = "SELECT ID, NOME, SOBRENOME FROM USER"
+    let scored_candidates = []
 
     connection.query(select_ids, async (err, result) => {
         if(err){
@@ -152,7 +200,16 @@ router.get('/:idVacancy', async (req, res) => {
                 candidates.push({Id: result[i].ID, Nome: result[i].NOME + " " + result[i].SOBRENOME, Experiencias: exp, Formacoes: grad, HardSkills: hard, Idiomas: lang, softSkills: soft, like: value});
             }
 
-            res.json(candidates)
+            connection.query('SELECT * FROM SKILLS WHERE VACANCY_ID = ?', [idVacancy], (err, vacancy_result) => {
+
+              if(err){
+                res.json(err);
+              }if(result.length > 0){
+                scored_candidates = calculateScore(vacancy_result, candidates);
+                scored_candidates.sort( (a,b) => b.score - a.score ); //sort in descending order
+                res.json(scored_candidates)
+              }
+            })
         }else{
             res.json(null);
         }
