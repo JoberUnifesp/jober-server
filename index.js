@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const connection = require('./databaseConnection')
 const bcrypt = require('bcryptjs')
+const authController = require('./controllers/auth.controller')
 
 app.use(express.json())
 app.use(cors())
@@ -25,7 +26,7 @@ app.post('/SignUp', (req, res) => {
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
-      );
+    );
       
     const nome = req.body.nome;
     const sobrenome = req.body.sobrenome;
@@ -56,66 +57,8 @@ app.post('/SignUp', (req, res) => {
 });
 
 
-
-
-
-app.post('/login', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-
-    const email = req.body.email;
-    const senha = req.body.senha;
-    const select_user_query = 'SELECT * FROM USER WHERE EMAIL = ?'
-    const select_company_query = 'SELECT * FROM COMPANY WHERE EMAIL = ?'
-
-
-    connection.query(select_user_query, [email], (err, result_user) => {
-        if(err){
-            res.json(err);
-        }
-        else if(result_user.length == 0){
-            connection.query(select_company_query, [email], (err, result_company) => {
-                if(err){
-                    res.json(err);
-                }else if(result_company.length == 0){
-                    return res.status(404).json({message: 'user or company not found', code: 404})
-                }else{
-                    const verified = bcrypt.compareSync(senha, result_company[0].SENHA);
-
-                    if(result_company.length > 0 && verified){
-                        return res.status(200).json({message: 'company sucessfully authenticated', code: 200, id: result_company[0].ID, user: false});
-                    }else{
-                        return res.status(401).json({message: 'incorrect password', code: 401})
-                    }
-                }
-            })
-        }else{
-            const verified = bcrypt.compareSync(senha, result_user[0].SENHA);
-
-            if(result_user.length > 0 && verified){
-                return res.status(200).json({message: 'user sucessfully authenticated', code: 200, id: result_user[0].ID, user: true});
-            }else{
-                return res.status(401).json({message: 'incorrect password', code: 401})
-            }
-        }
-
-    });
-});
-
-
-app.get('/', (req, res) => {
-    connection.query("SELECT * FROM USER", (err, result) => {
-        if(err){
-            res.write(err);
-        }
-        res.send(JSON.stringify(result))
-
-    });
-}) 
+app.post('/login', authController.login)
+app.get('/', authController.findAll);
 
 function normalizePort(val) {
     var port = parseInt(val, 10);

@@ -1,19 +1,16 @@
-const mysql = require('mysql');
+const Sequelize = require('sequelize');
 require('dotenv').config()
 
-const connection = mysql.createConnection({
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOSTNAME,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-})
-connection.connect((err) => {
-    if (err){
-        console.log('Connection failed: ', err);
-        return;
-    }
-
-    console.log(`Conected sucessfully to the database on azure`)
+    dialect: 'mysql',
+    logging: false
 })
 
-module.exports = connection;
+sequelize.authenticate().then(() => {
+    console.log('Conected sucessfully to the database on azure');
+ }).catch((error) => {
+    console.error('Connection failed: ', error);
+ });
+
+module.exports = sequelize;
